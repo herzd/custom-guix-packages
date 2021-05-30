@@ -1,4 +1,4 @@
-(define-module (gnu packages my-libgit2)
+(define-module (my-libgit2)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -9,6 +9,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages tls))
 
 (define-public my-libgit2
@@ -26,7 +27,6 @@
                 (sha256
                  (base32
                   "17pjvprmdrx4h6bb1hhc98w9qi6ki7yl57f090n9kbhswxqfs7s3"))
-                (patches (search-patches "libgit2-mtime-0.patch"))
                 (modules '((guix build utils)))
                 (snippet '(begin
                             ;; Remove bundled software.
@@ -70,3 +70,5 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
       ;; GPLv2 with linking exception
       (license license:gpl2))))
+
+my-libgit2
