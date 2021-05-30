@@ -1,4 +1,4 @@
-(define-module (my-libgit2)
+(define-module (gnu packages my-libgit2)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
