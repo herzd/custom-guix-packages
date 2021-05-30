@@ -71,4 +71,3 @@ write native speed custom Git applications in any language with bindings.")
       ;; GPLv2 with linking exception
       (license license:gpl2))))
 
-my-libgit2
