@@ -1,0 +1,18 @@
+* Goal
+  Packaging jupyterhub for GNU Guix.
+* Way
+  Working with guix environments for reproducability. Working the way up from interactive shell programming to putting it into a scheme service definition.
+* Environment creation
+  #+begin_example
+    source jupyterhub/bin/activate
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/gnu/store/3h7xd0d47a286b6r9qhz4ybi5iaxkfwi-gcc-11.1.0-lib/lib
+    export NPM_PACKAGES="${HOME}/.npm-packages"
+    export PATH="$PATH:$NPM_PACKAGES/bin"
+    export MANPATH="${MANPATH}:$NPM_PACKAGES/share/man"
+    npm config set prefix "${HOME}/.npm-packages"
+    cd jupyterhub/etc/jupyterhub/
+    ls
+    grep "c.Spawner.de" jupyterhub_config.py 
+    sed -i "s|# c.Spawner.default_url = ''||" jupyterhub_config.py 
+    jupyterhub -f jupyterhub_config.py 
+  #+end_example
