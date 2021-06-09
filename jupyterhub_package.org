@@ -1,18 +1,71 @@
 * Goal
-  Packaging jupyterhub for GNU Guix.
+  Packaging jupyterhub for GNU Guix. Adapting mainly from https://github.com/jupyterhub/jupyterhub-the-hard-way/blob/master/docs/installation-guide-hard.md.
 * Way
-  Working with guix environments for reproducability. Working the way up from interactive shell programming to putting it into a scheme service definition.
+  Working with guix environments for reproducability. Working the way up from interactive shell programming to putting it into a scheme service definition. Needless to say, this is work in progress ;)
 * Environment creation
   #+begin_example
-    source jupyterhub/bin/activate
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/gnu/store/3h7xd0d47a286b6r9qhz4ybi5iaxkfwi-gcc-11.1.0-lib/lib
-    export NPM_PACKAGES="${HOME}/.npm-packages"
-    export PATH="$PATH:$NPM_PACKAGES/bin"
-    export MANPATH="${MANPATH}:$NPM_PACKAGES/share/man"
-    npm config set prefix "${HOME}/.npm-packages"
-    cd jupyterhub/etc/jupyterhub/
-    ls
-    grep "c.Spawner.de" jupyterhub_config.py 
-    sed -i "s|# c.Spawner.default_url = ''||" jupyterhub_config.py 
-    jupyterhub -f jupyterhub_config.py 
+    bob@laptop ~$ guix environment --pure --ad-hoc gcc-toolchain coreutils python bash node grep sed linux-pam findutils
+    ## thx https://github.com/sindresorhus/guides/blob/main/npm-global-without-sudo.md
+    bob@laptop ~ [env]$ mkdir .npm-packages
+    bob@laptop ~ [env]$ npm config set prefix "${HOME}/.npm-packages
+    bob@laptop ~ [env]$ NPM_PACKAGES="${HOME}/.npm-packages"
+    bob@laptop ~ [env]$ export PATH="$PATH:$NPM_PACKAGES/bin"
+    bob@laptop ~ [env]$ export MANPATH="${MANPATH}:$NPM_PACKAGES/share/man"
+    bob@laptop ~ [env]$ npm install -g configurable-http-proxy
+    bob@laptop ~ [env]$ mkdir jupyterhub_venv
+    bob@laptop ~ [env]$ python3 -m venv jupyterhub_venv/
+    bob@laptop ~ [env]$ source jupyterhub_venv/bin/activate
+    (jupyterhub_venv) bob@laptop ~ [env]$ npm config set prefix "${HOME}/.npm-packages"
+    (jupyterhub_venv) bob@laptop ~ [env]$ NPM_PACKAGES="${HOME}/.npm-packages"
+    (jupyterhub_venv) bob@laptop ~ [env]$ export PATH="$PATH:$NPM_PACKAGES/bin"
+    (jupyterhub_venv) bob@laptop ~ [env]$ export MANPATH="${MANPATH}:$NPM_PACKAGES/share/man"
+    ## thx https://www.draketo.de/software/guix-work.html
+    (jupyterhub_venv) bob@laptop ~ [env]$ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/gnu/store/3h7xd0d47a286b6r9qhz4ybi5iaxkfwi-gcc-11.1.0-lib/lib ;; location for libstdc++
+    (jupyterhub_venv) bob@laptop ~ [env]$ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/gnu/store/y88fpc6jk6a4smxqjq0s835q5mximf02-linux-pam-1.5.1/lib ;; location for libpam
+    (jupyterhub_venv) bob@laptop ~ [env]$ pip install wheel
+    (jupyterhub_venv) bob@laptop ~ [env]$ pip install jupyterhub jupyterlab
+    (jupyterhub_venv) bob@laptop ~ [env]$ pip install ipywidgets
+    (jupyterhub_venv) bob@laptop ~ [env]$ mkdir jupyterhub_venv/etc/jupyterhub
+    (jupyterhub_venv) bob@laptop ~ [env]$ cd jupyterhub_venv/etc/jupyterhub/
+    (jupyterhub_venv) bob@laptop ~/jupyterhub_venv/etc/jupyterhub [env]$ jupyterhub --generate-config
+    (jupyterhub_venv) bob@laptop ~/jupyterhub_venv/etc/jupyterhub [env]$ sed -i "s|# c.Spawner.default_url = ''|c.Spawner.default_url = '/lab'|" jupyterhub_config.py
+    (jupyterhub_venv) bob@laptop ~/jupyterhub_venv/etc/jupyterhub [env]$ cd
+    (jupyterhub_venv) bob@laptop ~ [env]$ jupyterhub -f jupyterhub_venv/etc/jupyterhub/jupyterhub_config.py
+
+    [I 2021-06-10 00:09:28.547 JupyterHub app:2463] Running JupyterHub version 1.4.1
+    [I 2021-06-10 00:09:28.548 JupyterHub app:2493] Using Authenticator: jupyterhub.auth.PAMAuthenticator-1.4.1
+    [I 2021-06-10 00:09:28.548 JupyterHub app:2493] Using Spawner: jupyterhub.spawner.LocalProcessSpawner-1.4.1
+    [I 2021-06-10 00:09:28.548 JupyterHub app:2493] Using Proxy: jupyterhub.proxy.ConfigurableHTTPProxy-1.4.1
+    [I 2021-06-10 00:09:28.549 JupyterHub app:1534] Loading cookie_secret from /home/bob/jupyterhub_cookie_secret
+    [I 2021-06-10 00:09:28.569 JupyterHub proxy:497] Generating new CONFIGPROXY_AUTH_TOKEN
+    [W 2021-06-10 00:09:28.570 JupyterHub app:1808] No admin users, admin interface will be unavailable.
+    [W 2021-06-10 00:09:28.570 JupyterHub app:1809] Add any administrative users to `c.Authenticator.admin_users` in config.
+    [I 2021-06-10 00:09:28.570 JupyterHub app:1838] Not using allowed_users. Any authenticated user will be allowed.
+    [I 2021-06-10 00:09:28.617 JupyterHub app:2530] Initialized 0 spawners in 0.002 seconds
+    [W 2021-06-10 00:09:28.620 JupyterHub proxy:699] Running JupyterHub without SSL.  I hope there is SSL termination happening somewhere else...
+    [I 2021-06-10 00:09:28.620 JupyterHub proxy:703] Starting proxy @ http://:8000
+    00:09:28.744 [ConfigProxy] info: Proxying http://*:8000 to (no default)
+    00:09:28.746 [ConfigProxy] info: Proxy API at http://127.0.0.1:8001/api/routes
+    00:09:28.938 [ConfigProxy] info: 200 GET /api/routes 
+    [I 2021-06-10 00:09:28.938 JupyterHub app:2778] Hub API listening on http://127.0.0.1:8081/hub/
+    00:09:28.940 [ConfigProxy] info: 200 GET /api/routes 
+    [I 2021-06-10 00:09:28.940 JupyterHub proxy:347] Checking routes
+    [I 2021-06-10 00:09:28.940 JupyterHub proxy:432] Adding route for Hub: / => http://127.0.0.1:8081
+    00:09:28.942 [ConfigProxy] info: Adding route / -> http://127.0.0.1:8081
+    00:09:28.943 [ConfigProxy] info: Route added / -> http://127.0.0.1:8081
+    00:09:28.943 [ConfigProxy] info: 201 POST /api/routes/ 
+    [I 2021-06-10 00:09:28.943 JupyterHub app:2853] JupyterHub is now running at http://:8000
+    [I 2021-06-10 00:09:50.446 JupyterHub log:189] 302 GET / -> /hub/ (@::ffff:127.0.0.1) 1.08ms
+    [I 2021-06-10 00:09:50.455 JupyterHub log:189] 302 GET /hub/ -> /hub/login?next=%2Fhub%2F (@::ffff:127.0.0.1) 1.11ms
+    [I 2021-06-10 00:09:50.503 JupyterHub log:189] 200 GET /hub/login?next=%2Fhub%2F (@::ffff:127.0.0.1) 37.66ms
+    [W 2021-06-10 00:09:59.770 JupyterHub auth:1042] PAM Authentication failed (bob@::ffff:127.0.0.1): [PAM Error 9] Authentication service cannot retrieve authentication info
+    [W 2021-06-10 00:09:59.770 JupyterHub base:768] Failed login for bob
+    [I 2021-06-10 00:09:59.772 JupyterHub log:189] 200 POST /hub/login?next=%2Fhub%2F (@::ffff:127.0.0.1) 2042.22ms
+    ^C[C 2021-06-10 00:10:24.013 JupyterHub app:2941] Received signal SIGINT, initiating shutdown...
+    [I 2021-06-10 00:10:24.014 JupyterHub app:2582] Cleaning up single-user servers...
+    [I 2021-06-10 00:10:24.014 JupyterHub proxy:772] Cleaning up proxy[7988]...
+    [I 2021-06-10 00:10:24.014 JupyterHub app:2614] ...done
+    00:10:24.014 [ConfigProxy] warn: Terminated
+
+    ## OK, that looks better already. mhm, but how would pam communicate with the environment?
   #+end_example
