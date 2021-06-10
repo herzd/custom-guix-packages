@@ -1,5 +1,5 @@
 * Goal
-  Packaging jupyterhub for GNU Guix. Adapting mainly from https://github.com/jupyterhub/jupyterhub-the-hard-way/blob/master/docs/installation-guide-hard.md.
+  Packaging jupyterhub for [[https://guix.gnu.org][GNU Guix]]. Adapting mainly from the [[https://github.com/jupyterhub/jupyterhub-the-hard-way/blob/master/docs/installation-guide-hard.md][jupyterhub-documentation]].
 * Way
   Working with guix environments for reproducability. Working the way up from interactive shell programming to putting it into a scheme service definition. Needless to say, this is work in progress ;)
 * Environment creation
