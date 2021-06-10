@@ -63,3 +63,5 @@
     ## that looks better already. but how would pam communicate with the environment?
     ## also, nginx is missing yet
   #+end_example
+* State
+  auth-integration not working yet, for now focus on system-wide-configuration via config.scm
