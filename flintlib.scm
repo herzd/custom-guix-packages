@@ -3,8 +3,6 @@
                 #:select (gpl3+ lgpl2.0+ lgpl3+ public-domain))
   #:use-module (gnu packages)
   #:use-module (gnu packages multiprecision)
-  #:use-module (mpfr)
-  #:use-module (gmp)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages pkg-config)
