@@ -26,8 +26,7 @@
                                 ".tar.gz"))
             (sha256
              (base32
-              "07j8r96kdzp19cy3a5yvpjxf90mkd6103yr2n42qmpv7mgcjyvhq"))
-            (patches (search-patches "make-impure-dirs.patch"))))
+              "07j8r96kdzp19cy3a5yvpjxf90mkd6103yr2n42qmpv7mgcjyvhq"))))
    (build-system gnu-build-system)
    (native-inputs `(("pkg-config",pkg-config)))  ; to detect further inputs
    (inputs `(("gmp" ,gmp)
