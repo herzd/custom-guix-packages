@@ -32,22 +32,6 @@
    (inputs `(("gmp" ,gmp)
 	     ("mpfr",mpfr)))
    (outputs '("out" "debug"))
-   (arguments
-    `(,@(if (hurd-target?)
-            '(#:configure-flags '("CFLAGS=-D__alloca=alloca"
-                                  "ac_cv_func_posix_spawn=no"))
-            '())
-      #:phases
-      (modify-phases %standard-phases
-        (add-before 'build 'set-default-shell
-          (lambda* (#:key inputs #:allow-other-keys)
-            ;; Change the default shell from /bin/sh.
-            (let ((bash (assoc-ref inputs "bash")))
-              (substitute* "src/job.c"
-                (("default_shell =.*$")
-                 (format #f "default_shell = \"~a/bin/sh\";\n"
-                         bash)))
-              #t))))))
    (synopsis "FLINT: Fast Library for Number Theory")
    (description
     "FLINT is a C library for doing number theory, maintained by William Hart.")
