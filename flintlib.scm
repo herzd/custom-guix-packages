@@ -1,4 +1,4 @@
-(define-module (gnu packages my-flintlib)
+(define-module (flintlib)
   #:use-module ((guix licenses)
                 #:select (gpl3+ lgpl2.0+ lgpl3+ public-domain))
   #:use-module (gnu packages)
@@ -16,9 +16,9 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
-(define-public my-flintlib
+(define-public flintlib
   (package
-   (name "my-flintlib")
+   (name "flintlib")
    (version "2.7.1")
    (source (origin
             (method url-fetch)
