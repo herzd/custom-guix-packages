@@ -28,6 +28,7 @@
              (base32
               "07j8r96kdzp19cy3a5yvpjxf90mkd6103yr2n42qmpv7mgcjyvhq"))))
    (build-system gnu-build-system)
+   (arguments '(#:configure-flags '("")))
    (native-inputs `(("pkg-config",pkg-config)))  ; to detect further inputs
    (inputs `(("gmp" ,gmp)
 	     ("mpfr",mpfr)))
