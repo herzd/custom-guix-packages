@@ -1,40 +1,34 @@
-(define-module (flintlib)
-  #:use-module ((guix licenses)
-                #:select (gpl3+ lgpl2.0+ lgpl3+ public-domain))
-  #:use-module (gnu packages)
-  #:use-module (gnu packages multiprecision)
-  #:use-module (gnu packages linux)
-  #:use-module (gnu packages hurd)
-  #:use-module (gnu packages pkg-config)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
-  #:use-module (ice-9 format)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 optargs)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26))
+(use-modules (gnu packages)
+	     (gnu packages multiprecision)
+	     (gnu packages pkg-config)
+	     (guix packages)
+	     (guix download)
+	     (guix build-system gnu)
+	     (guix licenses))
 
-(define-public flintlib
-  (package
-   (name "flintlib")
-   (version "2.7.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "http://flintlib.org/flint-" version
-                                ".tar.gz"))
-            (sha256
-             (base32
-              "07j8r96kdzp19cy3a5yvpjxf90mkd6103yr2n42qmpv7mgcjyvhq"))))
-   (build-system gnu-build-system)
-   (arguments '(#:configure-flags '("")))
-   (native-inputs `(("pkg-config",pkg-config)))  ; to detect further inputs
-   (inputs `(("gmp" ,gmp)
-	     ("mpfr",mpfr)))
-   (outputs '("out" "debug"))
-   (synopsis "FLINT: Fast Library for Number Theory")
-   (description
-    "FLINT is a C library for doing number theory, maintained by William Hart.")
-   (license gpl3+)
-   (home-page "http://flintlib.org/")))
+(package
+ (name "flintlib")
+ (version "2.7.1")
+ (source (origin
+          (method url-fetch)
+          (uri (string-append "http://flintlib.org/flint-" version
+                              ".tar.gz"))
+          (sha256
+           (base32
+            "07j8r96kdzp19cy3a5yvpjxf90mkd6103yr2n42qmpv7mgcjyvhq"))))
+ (build-system gnu-build-system)
+ (native-inputs `(("pkg-config",pkg-config) ;; all in at once.
+		  ("gmp" ,gmp)
+		  ("mpfr",mpfr)))
+ (inputs `())
+ (arguments
+  `(#:configure-flags '("")
+    #:phases (modify-phases %standard-phases
+			    (replace 'configure (lambda* (#:key configure-flags  #:allow-other-keys)
+						  (apply invoke "./configure" configure-flags))))))
+ (outputs '("out" "debug"))
+ (synopsis "FLINT: Fast Library for Number Theory")
+ (description
+  "FLINT is a C library for doing number theory, maintained by William Hart.")
+ (license lgpl2.1+)
+ (home-page "http://flintlib.org/"))
