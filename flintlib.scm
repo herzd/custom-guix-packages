@@ -17,12 +17,18 @@
            (base32
             "07j8r96kdzp19cy3a5yvpjxf90mkd6103yr2n42qmpv7mgcjyvhq"))))
  (build-system gnu-build-system)
- (native-inputs `(("pkg-config",pkg-config) ;; all in at once.
-		  ("gmp" ,gmp)
-		  ("mpfr",mpfr)))
- (inputs `())
+ (native-inputs `(("pkg-config",pkg-config)))
+ (inputs `(("gmp" ,gmp)
+	   ("mpfr",mpfr)))
  (arguments
-  `(#:configure-flags '("")
+  `(#:configure-flags
+    (list
+     (string-append "--with-gmp="
+		    (assoc-ref %build-inputs "gmp") "/")
+     (string-append "--with-mpfr="
+		    (assoc-ref %build-inputs "mpfr") "/")
+     (string-append "--prefix="
+		    (assoc-ref %outputs "out")))
     #:phases (modify-phases %standard-phases
 			    (replace 'configure (lambda* (#:key configure-flags  #:allow-other-keys)
 						  (apply invoke "./configure" configure-flags))))))
